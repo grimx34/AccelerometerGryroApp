@@ -2,6 +2,11 @@ package com.sensors.sensortestapp;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -19,6 +24,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     private DataRecorder recorder = null;
     private static final int askForStoragePermission = 42;
 
+    private SensorManager senSensorManager;
+    private Sensor senAccelerometer;
+    private Sensor senGyro;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +45,11 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             }
         });
 
+        senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        senGyro = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED);
+        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
 
     }
 
@@ -61,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     askForStoragePermission);
         }
+
     }
 
     @Override
@@ -128,12 +144,15 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
         recorder.resumeWriting();
         recorder.writeString("Resumed");
+
+        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
     }
 
-    @Override
-    public void onPause()
-    {
+
+    protected void onPause() {
         super.onPause();
+        senSensorManager.unregisterListener(this);
 
         if (recorder == null)
             return;
@@ -141,4 +160,31 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         recorder.writeString("Stopped");
         recorder.stopWriting();
     }
+
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        Sensor mySensor = event.sensor;
+
+        if(mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
+        } else if(mySensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
+            float x = event.values[0];
+            float y = event.values[1];
+            float z = event.values[2];
+
+            Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
+
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
 }

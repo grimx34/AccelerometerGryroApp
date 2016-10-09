@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/AccelerometerGryroApp.iml" filepath="$PROJECT_DIR$/AccelerometerGryroApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/SensorTestApp.iml" filepath="$PROJECT_DIR$/SensorTestApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
