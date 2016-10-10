@@ -1,15 +1,10 @@
 package com.sensors.sensortestapp;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.content.Context;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
+import android.content.pm.PackageManager;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,21 +13,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity implements SensorEventListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
 
     private DataRecorder recorder = null;
     private static final int askForStoragePermission = 11;
 
-    private SensorManager senSensorManager;
-    private Sensor senAccelerometer;
-    private Sensor senGyro;
-
+    private SensorDataCollector sensorDataCollector = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,29 +33,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                EditText editTest1 = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
+
+                Log.d("BUTTON","Name: \""+editTest1.getText()+"\", Weight: "+editText2.getText()+"Kg");
+                editTest1.setText("");
+                editText2.setText("");
             }
         });
 
-        senSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        senGyro = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED);
-        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
+        sensorDataCollector = new SensorDataCollector((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
-
-        requestWritePermission();
     }
 
     private void startRecording()
     {
         try {
             recorder = new DataRecorder();
+            recorder.start();
+            sensorDataCollector.setRecorder(recorder);
         }
         catch (Exception e)
         {
@@ -71,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             e.printStackTrace();
             recorder = null;
         }
-
     }
 
     private void requestWritePermission()
@@ -117,9 +108,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
     }
 
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -147,69 +135,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     {
         super.onResume();
 
-        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
-
-        if (recorder == null) {
-            requestWritePermission();
-            return;
-        }
-
-        recorder.start();
-        recorder.writeString("Started");
+        sensorDataCollector.registerListeners();
+        requestWritePermission();
 
     }
-
 
     protected void onPause() {
         super.onPause();
 
-        senSensorManager.unregisterListener(this);
-
-        if (recorder == null)
-            return;
-
-        recorder.writeString("Stopped");
-        recorder.stop();
+        sensorDataCollector.unRegisterListeners();
     }
 
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        Sensor mySensor = event.sensor;
-
-        if(mySensor.getType() == Sensor.TYPE_ACCELEROMETER) {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            //Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
-
-            if (recorder != null)
-            {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",ACC," + x + "," + y + "," + z);
-            }
-
-        } else if(mySensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
-            float x = event.values[0];
-            float y = event.values[1];
-            float z = event.values[2];
-
-            //Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
-
-            if (recorder != null)
-            {
-                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
-                recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",GYR," + x + "," + y + "," + z);
-            }
-
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
 
 }
