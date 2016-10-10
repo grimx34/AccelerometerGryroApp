@@ -19,10 +19,15 @@ import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
+public class MainActivity extends AppCompatActivity implements SensorEventListener {
+
+    private static final String TAG = "MainActivity";
 
     private DataRecorder recorder = null;
-    private static final int askForStoragePermission = 42;
+    private static final int askForStoragePermission = 11;
 
     private SensorManager senSensorManager;
     private Sensor senAccelerometer;
@@ -51,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
         senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
 
+
+        requestWritePermission();
     }
 
     private void startRecording()
@@ -72,14 +79,18 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED)
         {
+            Log.d(TAG, "No write permissions yet.. requesting");
+
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     askForStoragePermission);
         }
-
+        else
+        {
+            startRecording();
+        }
     }
 
-    @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
         switch (requestCode) {
@@ -90,18 +101,17 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
+                    Log.d(TAG, "Permission granted, starting recording..");
                     startRecording();
 
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-
                     requestWritePermission();
                 }
                 return;
             }
-
             // other 'case' lines to check for other
             // permissions this app might request
         }
@@ -137,28 +147,30 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
     {
         super.onResume();
 
+        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
+
         if (recorder == null) {
-            //requestWritePermission();
+            requestWritePermission();
             return;
         }
 
-        recorder.resumeWriting();
-        recorder.writeString("Resumed");
+        recorder.start();
+        recorder.writeString("Started");
 
-        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
     }
 
 
     protected void onPause() {
         super.onPause();
+
         senSensorManager.unregisterListener(this);
 
         if (recorder == null)
             return;
 
         recorder.writeString("Stopped");
-        recorder.stopWriting();
+        recorder.stop();
     }
 
 
@@ -171,13 +183,26 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             float y = event.values[1];
             float z = event.values[2];
 
-            Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
+            //Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
+
+            if (recorder != null)
+            {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",ACC," + x + "," + y + "," + z);
+            }
+
         } else if(mySensor.getType() == Sensor.TYPE_GYROSCOPE_UNCALIBRATED) {
             float x = event.values[0];
             float y = event.values[1];
             float z = event.values[2];
 
-            Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
+            //Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
+
+            if (recorder != null)
+            {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+                recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",GYR," + x + "," + y + "," + z);
+            }
 
         }
     }
