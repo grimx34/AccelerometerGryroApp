@@ -35,14 +35,14 @@ public class SensorDataCollector implements SensorEventListener {
                 y = event.values[1];
                 z = event.values[2];
 
-                Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
+                //Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
                 break;
             case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
                 x = event.values[0];
                 y = event.values[1];
                 z = event.values[2];
 
-                Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
+                //Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
                 break;
         }
     }

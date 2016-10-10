@@ -15,6 +15,8 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends AppCompatActivity implements ActivityCompat.OnRequestPermissionsResultCallback {
 
@@ -30,17 +32,20 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button button = (Button) findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                EditText editTest1 = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
+
+                Log.d("BUTTON","Name: \""+editTest1.getText()+"\", Weight: "+editText2.getText()+"Kg");
+                editTest1.setText("");
+                editText2.setText("");
             }
         });
 
         sensorDataCollector = new SensorDataCollector((SensorManager) getSystemService(Context.SENSOR_SERVICE));
-
     }
 
     private void startRecording()
@@ -54,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements ActivityCompat.On
             e.printStackTrace();
             recorder = null;
         }
-
     }
 
     private void requestWritePermission()
