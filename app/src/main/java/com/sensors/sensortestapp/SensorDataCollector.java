@@ -19,6 +19,7 @@ public class SensorDataCollector implements SensorEventListener {
     private Sensor senGyro;
 
     private DataRecorder mRecorder = null;
+    private Boolean mRead = false;
 
     public SensorDataCollector(SensorManager senMngr) {
         senSensorManager = senMngr;
@@ -30,6 +31,7 @@ public class SensorDataCollector implements SensorEventListener {
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if(!mRead) return;
         Sensor mySensor = event.sensor;
 
         float x,y,z = 0.0f;
@@ -89,5 +91,13 @@ public class SensorDataCollector implements SensorEventListener {
             return;
 
         mRecorder.stop();
+    }
+
+    public void startRecording() {
+        mRead = true;
+    }
+
+    public void stopRecording() {
+        mRead = false;
     }
 }

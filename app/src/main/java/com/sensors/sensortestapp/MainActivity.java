@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 button.setEnabled(false);
                 button2.setEnabled(true);
+                sensorDataCollector.startRecording();
 
             }
         });
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 editText2.setText("");
                 button2.setEnabled(false);
                 button.setEnabled(true);
+                sensorDataCollector.stopRecording();
             }
         });
 
