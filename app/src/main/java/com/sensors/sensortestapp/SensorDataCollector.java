@@ -45,8 +45,6 @@ public class SensorDataCollector implements SensorEventListener {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
                     mRecorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",ACC," + x + "," + y + "," + z);
                 }
-
-                //Log.d("MAIN", "AcX = "+x+", AcY = "+y+", AcZ = "+z);
                 break;
             case Sensor.TYPE_GYROSCOPE_UNCALIBRATED:
                 x = event.values[0];
@@ -58,7 +56,6 @@ public class SensorDataCollector implements SensorEventListener {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
                     mRecorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",GYR," + x + "," + y + "," + z);
                 }
-                //Log.d("MAIN", "GyX = "+x+", GyY = "+y+", GyZ = "+z);
                 break;
         }
     }
@@ -68,6 +65,7 @@ public class SensorDataCollector implements SensorEventListener {
     {
         mRecorder = recorder;
     }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 

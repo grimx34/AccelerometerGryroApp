@@ -16,6 +16,9 @@ import android.view.MenuItem;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -33,18 +36,50 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Button button = (Button) findViewById(R.id.button);
+        final Button button = (Button) findViewById(R.id.button);
+        final Button button2 = (Button) findViewById(R.id.button2);
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 EditText editTest1 = (EditText) findViewById(R.id.editText);
                 EditText editText2 = (EditText) findViewById(R.id.editText2);
 
-                Log.d("BUTTON","Name: \""+editTest1.getText()+"\", Weight: "+editText2.getText()+"Kg");
-                editTest1.setText("");
-                editText2.setText("");
+                editTest1.setEnabled(false);
+                editText2.setEnabled(false);
+
+                if (recorder != null)
+                {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
+                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "START");
+                }
+                button.setEnabled(false);
+                button2.setEnabled(true);
+
             }
         });
+
+        button2.setEnabled(false);
+        button2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EditText editTest1 = (EditText) findViewById(R.id.editText);
+                EditText editText2 = (EditText) findViewById(R.id.editText2);
+
+                if (recorder != null)
+                {
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
+                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "END");
+                }
+                editTest1.setEnabled(true);
+                editText2.setEnabled(true);
+                editTest1.setText("");
+                editText2.setText("");
+                button2.setEnabled(false);
+                button.setEnabled(true);
+            }
+        });
+
 
         sensorDataCollector = new SensorDataCollector((SensorManager) getSystemService(Context.SENSOR_SERVICE));
 
