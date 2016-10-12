@@ -104,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestWritePermission()
     {
+        if (recorder != null)
+          return;
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED)
         {
