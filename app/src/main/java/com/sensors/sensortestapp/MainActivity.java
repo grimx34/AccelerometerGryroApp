@@ -87,8 +87,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void startRecording()
+    private void startRecorder()
     {
+        if (recorder != null)
+          return;
+
         try {
             recorder = new DataRecorder();
             recorder.start();
@@ -104,9 +107,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void requestWritePermission()
     {
-        if (recorder != null)
-          return;
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
                 PackageManager.PERMISSION_GRANTED)
         {
@@ -118,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            startRecording();
+            startRecorder();
         }
     }
 
@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                     Log.d(TAG, "Permission granted, starting recording..");
-                    startRecording();
+                    startRecorder();
 
                 } else {
 
