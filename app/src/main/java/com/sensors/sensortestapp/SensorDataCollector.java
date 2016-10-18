@@ -25,8 +25,8 @@ public class SensorDataCollector implements SensorEventListener {
         senSensorManager = senMngr;
         senAccelerometer = senSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         senGyro = senSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE_UNCALIBRATED);
-        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_FASTEST);
-        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_FASTEST);
+        senSensorManager.registerListener(this, senAccelerometer, senSensorManager.SENSOR_DELAY_GAME);
+        senSensorManager.registerListener(this, senGyro, senSensorManager.SENSOR_DELAY_GAME);
     }
 
     @Override

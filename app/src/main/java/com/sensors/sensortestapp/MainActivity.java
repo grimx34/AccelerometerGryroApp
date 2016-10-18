@@ -36,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        EditText editText3 = (EditText) findViewById(R.id.editText3);
+        editText3.setEnabled(false);
+
         final Button button = (Button) findViewById(R.id.button);
         final Button button2 = (Button) findViewById(R.id.button2);
 
@@ -44,9 +47,11 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 EditText editTest1 = (EditText) findViewById(R.id.editText);
                 EditText editText2 = (EditText) findViewById(R.id.editText2);
+                EditText editText3 = (EditText) findViewById(R.id.editText3);
 
                 editTest1.setEnabled(false);
                 editText2.setEnabled(false);
+
 
                 if (recorder != null)
                 {
@@ -55,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 button.setEnabled(false);
                 button2.setEnabled(true);
+                editText3.setEnabled(true);
                 sensorDataCollector.startRecording();
 
             }
@@ -66,16 +72,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 EditText editTest1 = (EditText) findViewById(R.id.editText);
                 EditText editText2 = (EditText) findViewById(R.id.editText2);
+                EditText editText3 = (EditText) findViewById(R.id.editText3);
 
                 if (recorder != null)
                 {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
-                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "END");
+                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "END" +","+editText3.getText());
                 }
                 editTest1.setEnabled(true);
                 editText2.setEnabled(true);
-                editTest1.setText("");
-                editText2.setText("");
+                editText3.setText("");
+                editText3.setEnabled(false);
                 button2.setEnabled(false);
                 button.setEnabled(true);
                 sensorDataCollector.stopRecording();
