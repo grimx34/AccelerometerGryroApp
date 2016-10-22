@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 if (recorder != null)
                 {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss.SSS");
-                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "START");
+                    recorder.writeString(formatter.format(Calendar.getInstance().getTime()) + ",EXC," + editTest1.getText() + "," + editText2.getText() + "," + "START, NA");
                 }
                 button.setEnabled(false);
                 button2.setEnabled(true);
@@ -73,6 +73,16 @@ public class MainActivity extends AppCompatActivity {
                 EditText editTest1 = (EditText) findViewById(R.id.editText);
                 EditText editText2 = (EditText) findViewById(R.id.editText2);
                 EditText editText3 = (EditText) findViewById(R.id.editText3);
+
+                if(editText3.getText().toString().equals("")){
+                    return;
+                }
+
+                try {
+                    Integer.parseInt(editText3.getText().toString());
+                } catch (NumberFormatException e) {
+                    return;
+                }
 
                 if (recorder != null)
                 {
