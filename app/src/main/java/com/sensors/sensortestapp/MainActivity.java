@@ -111,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
 
         try {
             recorder = new DataRecorder();
-            recorder.start();
             sensorDataCollector.setRecorder(recorder);
         }
         catch (Exception e)

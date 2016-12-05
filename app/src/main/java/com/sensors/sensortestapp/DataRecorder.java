@@ -64,9 +64,9 @@ public class DataRecorder {
         return file;
     }
 
-
     public void writeString(String string)
     {
+        if (mThreadHandler == null || !mWriterThread.isAlive()) this.start();
         if (mThreadHandler == null) return;
         mThreadHandler.obtainMessage(WRITE_STRING, string).sendToTarget();
     }
@@ -100,7 +100,6 @@ public class DataRecorder {
         mThreadHandler = new WorkerThreadHandler(targetFile, mWriterThread.getLooper());
     }
 
-
     static class WorkerThreadHandler extends Handler
     {
         final private File mTargetFile;
@@ -116,7 +115,6 @@ public class DataRecorder {
             startWriting();
         }
 
-
         @Override
         public void handleMessage(Message msg)
         {
@@ -131,7 +129,6 @@ public class DataRecorder {
                     break;
             }
         }
-
 
         private void stopWriting()
         {
@@ -181,13 +178,5 @@ public class DataRecorder {
                 e.printStackTrace();
             }
         }
-
     }
-
-
-
-
-
-
-
 }

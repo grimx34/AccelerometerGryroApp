@@ -79,8 +79,6 @@ public class SensorDataCollector implements SensorEventListener {
 
         if (mRecorder == null)
             return;
-
-        mRecorder.start();
     }
 
     public void unRegisterListeners() {
